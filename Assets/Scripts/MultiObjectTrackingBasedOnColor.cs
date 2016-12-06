@@ -64,7 +64,7 @@ namespace UrbanTag
         /// <summary>
         /// max number of objects to be detected in frame
         /// </summary>
-        public int MAX_NUM_OBJECTS = 5;
+        public int MAX_NUM_OBJECTS = 6;
 
         /// <summary>
         /// minimum and maximum object area
@@ -94,11 +94,7 @@ namespace UrbanTag
         /// <summary>
         /// Color to track
         /// </summary>
-        ColorObject blue;
-        ColorObject yellow;
-        ColorObject red;
-        ColorObject green;
-        ColorObject orange;
+        List<ColorObject> colorsToTrack;
 
         /// <summary>
         /// Associate color should be track?
@@ -112,12 +108,12 @@ namespace UrbanTag
         /// <summary>
         /// Color objects which need to appear on screen when traking don't need to run
         /// </summary>
-        List<ColorObject> colorObjectsMemory = new List<ColorObject>();
+        List<ColorObject> colorToDraw = new List<ColorObject>();
 
         /// <summary>
         /// use as frame count between two tracking
         /// </summary>
-        int elapsedFrame;
+        bool isTracking;
 
         // Use this for initialization
         void Start()
@@ -208,12 +204,33 @@ namespace UrbanTag
                     yield return 0;
                 }
             }
-            elapsedFrame = 1;
-            blue = new ColorObject("blue");
-            yellow = new ColorObject("yellow");
-            red = new ColorObject("red");
-            green = new ColorObject("green");
-            orange = new ColorObject("orange");
+            isTracking = false;
+            colorsToTrack = new List<ColorObject>();
+            //first blue
+            if (blueShouldBeTrack)
+            {
+                colorsToTrack.Add(new ColorObject("blue"));
+            }
+            //then yellows
+            if (yellowShouldBeTrack)
+            {
+                colorsToTrack.Add(new ColorObject("yellow"));
+            }
+            //then reds
+            if (redShouldBeTrack)
+            {
+                colorsToTrack.Add(new ColorObject("red"));
+            }
+            //then greens
+            if (greenShouldBeTrack)
+            {
+                colorsToTrack.Add(new ColorObject("green"));
+            }
+            //then orange
+            if (orangeShouldBeTrack)
+            {
+                colorsToTrack.Add(new ColorObject("orange"));
+            }
         }
 
         private void updateLayout()
@@ -290,14 +307,15 @@ namespace UrbanTag
                     Core.flip(rgbMat, rgbMat, -1);
                 }
 
-                coroutine = trackingCoroutine(thresholdMat, hsvMat, rgbMat);
-                StartCoroutine(coroutine);
-                
+                if (!isTracking)
+                {
+                    coroutine = trackingCoroutine(thresholdMat, hsvMat, rgbMat);
+                    StartCoroutine(coroutine);
+                }
                 Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
                 morphOps(thresholdMat);
-                elapsedFrame++;
                 drawObjectsInMemory(thresholdMat, hsvMat, rgbMat);
-
+                
                 Utils.matToTexture2D(rgbMat, texture, colors);
             }
         }
@@ -366,6 +384,7 @@ namespace UrbanTag
         ColorObject trackFilteredObject(ColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
         {
             ColorObject tmpForMemory = new ColorObject();
+            tmpForMemory.setType("null");
             Mat temp = new Mat();
             threshold.copyTo(temp);
             //these two vectors needed for output of findContours
@@ -374,7 +393,6 @@ namespace UrbanTag
             //find contours of filtered image using openCV findContours function
             Imgproc.findContours(temp, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
             //use moments method to find our filtered object
-            bool colorObjectFound = false;
             if (hierarchy.rows() > 0)
             {
                 int numObjects = hierarchy.rows();
@@ -397,22 +415,12 @@ namespace UrbanTag
                             colorObject.setYPos((int) (moment.get_m01() / area));
                             colorObject.setType(theColorObject.getType());
                             colorObject.setColor(theColorObject.getColor());
-                            colorObjectFound = true;
                             if (area > areaMemory)
                             {
                                 areaMemory = area;
                                 tmpForMemory = colorObject;
                             }
                         }
-                        else
-                        {
-                            colorObjectFound = false;
-                        }
-                    }
-                    //set the memory for draw without tracking during a few frame
-                    if (colorObjectFound == true)
-                    {
-                        return tmpForMemory;
                     }
                 }
                 else
@@ -421,9 +429,7 @@ namespace UrbanTag
                         Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Core.LINE_AA, false);
                 }
             }
-            ColorObject res = new ColorObject();
-            res.setType("null");
-            return res;
+            return tmpForMemory;
         }
 
         /// <summary>
@@ -434,100 +440,41 @@ namespace UrbanTag
         /// <param name="cameraFeed"></param>
         void drawObjectsInMemory(Mat threshold, Mat HSV, Mat cameraFeed)
         {
-            Mat temp = new Mat();
-            threshold.copyTo(temp);
-            //these two vectors needed for output of findContours
-            List<MatOfPoint> contours = new List<MatOfPoint>();
-            Mat hierarchy = new Mat();
-            //find contours of filtered image using openCV findContours function
-            Imgproc.findContours(temp, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-            //use moments method to find our filtered object
-            if (hierarchy.rows() > 0)
+            for (int i = 0; i < colorToDraw.Count; i++)
             {
-                int numObjects = hierarchy.rows();
-                //if number of objects greater than MAX_NUM_OBJECTS we have a noisy filter
-                if (numObjects < MAX_NUM_OBJECTS)
-                {
-                    //draw object location on screen
-                    drawObject(colorObjectsMemory, cameraFeed, temp, contours, hierarchy);
-                }
-                else
-                {
-                    Core.putText(cameraFeed, "TOO MUCH NOISE!", new Point(5, cameraFeed.rows() - 10),
-                        Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Core.LINE_AA, false);
-                }
+                Core.circle(cameraFeed, new Point(colorToDraw[i].getXPos(), colorToDraw[i].getYPos()), 50, colorToDraw[i].getColor());
             }
         }
 
+        /// <summary>
+        /// Coroutine de gestion du tracking
+        /// </summary>
+        /// <param name="threshold"></param>
+        /// <param name="HSV"></param>
+        /// <param name="cameraFeed"></param>
+        /// <returns></returns>
         IEnumerator trackingCoroutine(Mat threshold, Mat HSV, Mat cameraFeed)
         {
+            isTracking = true;
             List<ColorObject> myMemory = new List<ColorObject>();
             ColorObject test = new ColorObject();
+            int i = 0;
             //first find blue objects
-            if (blueShouldBeTrack)
+            while (i<colorsToTrack.Count)
             {
                 Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
+                Core.inRange(hsvMat, colorsToTrack[i].getHSVmin(), colorsToTrack[i].getHSVmax(), thresholdMat);
                 morphOps(thresholdMat);
-                test = trackFilteredObject(blue, thresholdMat, hsvMat, rgbMat);
+                test = trackFilteredObject(colorsToTrack[i], thresholdMat, hsvMat, rgbMat);
                 if(test.getType() != "null")
                 {
                     myMemory.Add(test);
                 }
+                i++;
+                yield return null;
             }
-            //then yellows
-            if (yellowShouldBeTrack)
-            {
-                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
-                morphOps(thresholdMat);
-                test = trackFilteredObject(yellow, thresholdMat, hsvMat, rgbMat);
-                if (test.getType() != "null")
-                {
-                    myMemory.Add(test);
-                }
-            }
-            //then reds
-            if (redShouldBeTrack)
-            {
-                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
-                morphOps(thresholdMat);
-                test = trackFilteredObject(red, thresholdMat, hsvMat, rgbMat);
-                if (test.getType() != "null")
-                {
-                    myMemory.Add(test);
-                }
-            }
-            //then greens
-            if (greenShouldBeTrack)
-            {
-                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
-                morphOps(thresholdMat);
-                test = trackFilteredObject(green, thresholdMat, hsvMat, rgbMat);
-                if (test.getType() != "null")
-                {
-                    myMemory.Add(test);
-                }
-            }
-            //then orange
-            if (orangeShouldBeTrack)
-            {
-                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                Core.inRange(hsvMat, orange.getHSVmin(), orange.getHSVmax(), thresholdMat);
-                morphOps(thresholdMat);
-                test = trackFilteredObject(orange, thresholdMat, hsvMat, rgbMat);
-                if (test.getType() != "null")
-                {
-                    myMemory.Add(test);
-                }
-            }
-            colorObjectsMemory.Clear();
-            colorObjectsMemory = myMemory;
-            yield return null; 
+            colorToDraw = myMemory;
+            isTracking = false;
         }
-
-
     }
 }
