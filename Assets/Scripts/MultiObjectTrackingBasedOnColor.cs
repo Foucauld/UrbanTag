@@ -114,6 +114,16 @@ namespace UrbanTag
         /// </summary>
         int elapsedFrame;
 
+        /// <summary>
+        /// HSV Pixel read by touch event during calibration
+        /// </summary>
+        private Scalar hsvPixel = new Scalar(0);
+
+        /// <summary>
+        /// Current color under calibration
+        /// </summary>
+        private ColorObject currentColorToCalibrate;
+
         // Use this for initialization
         void Start()
         {
@@ -209,6 +219,8 @@ namespace UrbanTag
             red = new ColorObject("red");
             green = new ColorObject("green");
             orange = new ColorObject("orange");
+
+            currentColorToCalibrate = blue;
         }
 
         private void updateLayout()
@@ -246,6 +258,8 @@ namespace UrbanTag
         // Update is called once per frame
         void Update()
         {
+            HandleTouchEvent(hsvMat);
+
             if (!initDone)
                 return;
             if (screenOrientation != Screen.orientation)
@@ -337,9 +351,21 @@ namespace UrbanTag
                     elapsedFrame++;
                     drawObjectsInMemory(thresholdMat, hsvMat, rgbMat);
                 }
-                
+
 
                 Utils.matToTexture2D(rgbMat, texture, colors);
+            }
+        }
+
+        void HandleTouchEvent(Mat hsvMat)
+        {
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                int x = (int)Input.GetTouch(0).position.x;
+                int  y = (int)Input.GetTouch(0).position.y;
+
+                hsvMat.get(x, y, hsvPixel.val);
+                currentColorToCalibrate.setBound(hsvPixel);
             }
         }
 
