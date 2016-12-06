@@ -87,6 +87,11 @@ namespace UrbanTag
         Mat hsvMat;
 
         /// <summary>
+        /// Coroutine utilisé pour effectuer le tracking
+        /// </summary>
+        IEnumerator coroutine;
+
+        /// <summary>
         /// Color to track
         /// </summary>
         ColorObject blue;
@@ -285,59 +290,13 @@ namespace UrbanTag
                     Core.flip(rgbMat, rgbMat, -1);
                 }
 
-                if (elapsedFrame % 20 == 0)
-                {
-                    colorObjectsMemory.Clear();
-                    //first find blue objects
-                    if (blueShouldBeTrack)
-                    {
-                        Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                        Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
-                        morphOps(thresholdMat);
-                        trackFilteredObject(blue, thresholdMat, hsvMat, rgbMat);
-                    }
-                    //then yellows
-                    if (yellowShouldBeTrack)
-                    {
-                        Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                        Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
-                        morphOps(thresholdMat);
-                        trackFilteredObject(yellow, thresholdMat, hsvMat, rgbMat);
-                    }
-                    //then reds
-                    if (redShouldBeTrack)
-                    {
-                        Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                        Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
-                        morphOps(thresholdMat);
-                        trackFilteredObject(red, thresholdMat, hsvMat, rgbMat);
-                    }
-                    //then greens
-                    if (greenShouldBeTrack)
-                    {
-                        Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                        Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
-                        morphOps(thresholdMat);
-                        trackFilteredObject(green, thresholdMat, hsvMat, rgbMat);
-                    }
-                    //then orange
-                    if (orangeShouldBeTrack)
-                    {
-                        Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                        Core.inRange(hsvMat, orange.getHSVmin(), orange.getHSVmax(), thresholdMat);
-                        morphOps(thresholdMat);
-                        trackFilteredObject(orange, thresholdMat, hsvMat, rgbMat);
-                    }
-                    elapsedFrame = 1;
-                }
-                else
-                {
-                    Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
-                    morphOps(thresholdMat);
-                    elapsedFrame++;
-                    drawObjectsInMemory(thresholdMat, hsvMat, rgbMat);
-                }
+                coroutine = trackingCoroutine(thresholdMat, hsvMat, rgbMat);
+                StartCoroutine(coroutine);
                 
+                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+                morphOps(thresholdMat);
+                elapsedFrame++;
+                drawObjectsInMemory(thresholdMat, hsvMat, rgbMat);
 
                 Utils.matToTexture2D(rgbMat, texture, colors);
             }
@@ -404,7 +363,7 @@ namespace UrbanTag
         /// <param name="threshold">Threshold.</param>
         /// <param name="HSV">HS.</param>
         /// <param name="cameraFeed">Camera feed.</param>
-        void trackFilteredObject(ColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
+        ColorObject trackFilteredObject(ColorObject theColorObject, Mat threshold, Mat HSV, Mat cameraFeed)
         {
             ColorObject tmpForMemory = new ColorObject();
             Mat temp = new Mat();
@@ -450,13 +409,10 @@ namespace UrbanTag
                             colorObjectFound = false;
                         }
                     }
-                //let user know you found an object
+                    //set the memory for draw without tracking during a few frame
                     if (colorObjectFound == true)
                     {
-                        //set the memory for draw without tracking during a few frame
-                        colorObjectsMemory.Add(tmpForMemory);
-                        //draw object location on screen
-                        drawObject(colorObjectsMemory, cameraFeed, temp, contours, hierarchy);
+                        return tmpForMemory;
                     }
                 }
                 else
@@ -465,6 +421,9 @@ namespace UrbanTag
                         Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Core.LINE_AA, false);
                 }
             }
+            ColorObject res = new ColorObject();
+            res.setType("null");
+            return res;
         }
 
         /// <summary>
@@ -498,6 +457,75 @@ namespace UrbanTag
                         Core.FONT_HERSHEY_SIMPLEX, 1.0, new Scalar(255, 255, 255, 255), 2, Core.LINE_AA, false);
                 }
             }
+        }
+
+        IEnumerator trackingCoroutine(Mat threshold, Mat HSV, Mat cameraFeed)
+        {
+            List<ColorObject> myMemory = new List<ColorObject>();
+            ColorObject test = new ColorObject();
+            //first find blue objects
+            if (blueShouldBeTrack)
+            {
+                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+                Core.inRange(hsvMat, blue.getHSVmin(), blue.getHSVmax(), thresholdMat);
+                morphOps(thresholdMat);
+                test = trackFilteredObject(blue, thresholdMat, hsvMat, rgbMat);
+                if(test.getType() != "null")
+                {
+                    myMemory.Add(test);
+                }
+            }
+            //then yellows
+            if (yellowShouldBeTrack)
+            {
+                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+                Core.inRange(hsvMat, yellow.getHSVmin(), yellow.getHSVmax(), thresholdMat);
+                morphOps(thresholdMat);
+                test = trackFilteredObject(yellow, thresholdMat, hsvMat, rgbMat);
+                if (test.getType() != "null")
+                {
+                    myMemory.Add(test);
+                }
+            }
+            //then reds
+            if (redShouldBeTrack)
+            {
+                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+                Core.inRange(hsvMat, red.getHSVmin(), red.getHSVmax(), thresholdMat);
+                morphOps(thresholdMat);
+                test = trackFilteredObject(red, thresholdMat, hsvMat, rgbMat);
+                if (test.getType() != "null")
+                {
+                    myMemory.Add(test);
+                }
+            }
+            //then greens
+            if (greenShouldBeTrack)
+            {
+                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+                Core.inRange(hsvMat, green.getHSVmin(), green.getHSVmax(), thresholdMat);
+                morphOps(thresholdMat);
+                test = trackFilteredObject(green, thresholdMat, hsvMat, rgbMat);
+                if (test.getType() != "null")
+                {
+                    myMemory.Add(test);
+                }
+            }
+            //then orange
+            if (orangeShouldBeTrack)
+            {
+                Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
+                Core.inRange(hsvMat, orange.getHSVmin(), orange.getHSVmax(), thresholdMat);
+                morphOps(thresholdMat);
+                test = trackFilteredObject(orange, thresholdMat, hsvMat, rgbMat);
+                if (test.getType() != "null")
+                {
+                    myMemory.Add(test);
+                }
+            }
+            colorObjectsMemory.Clear();
+            colorObjectsMemory = myMemory;
+            yield return null; 
         }
 
 
