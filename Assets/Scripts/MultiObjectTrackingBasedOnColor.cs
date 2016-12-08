@@ -2,6 +2,7 @@
 using System.Collections;
 using OpenCVForUnity;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace UrbanTag
 {
@@ -99,26 +100,36 @@ namespace UrbanTag
         /// <summary>
         /// Associate color should be track?
         /// </summary>
-        bool blueShouldBeTrack = true;
-        bool yellowShouldBeTrack = true;
-        bool redShouldBeTrack = true;
+        bool whiteShouldBeTrack = false;
+        bool blueShouldBeTrack = false;
+        bool yellowShouldBeTrack = false;
+        bool redShouldBeTrack = false;
         bool greenShouldBeTrack = true;
-        bool orangeShouldBeTrack = true;
+        bool orangeShouldBeTrack = false;
 
         /// <summary>
         /// Color objects which need to appear on screen when traking don't need to run
         /// </summary>
-        List<ColorObject> colorToDraw = new List<ColorObject>();
+        private List<ColorObject> colorToDraw = new List<ColorObject>();
 
         /// <summary>
         /// use as frame count between two tracking
         /// </summary>
         bool isTracking;
 
+        private Thread trackingThread;
+
+        public List<ColorObject> GetTargets()
+        {
+            return colorToDraw;
+        }
+
         // Use this for initialization
         void Start()
         {
+            Screen.orientation = ScreenOrientation.Portrait;
             StartCoroutine(init());
+            Renderer renderer = GetComponent<Renderer>();
         }
 
         private IEnumerator init()
@@ -207,6 +218,7 @@ namespace UrbanTag
             isTracking = false;
             colorsToTrack = new List<ColorObject>();
             //first blue
+
             if (blueShouldBeTrack)
             {
                 colorsToTrack.Add(new ColorObject("blue"));
@@ -230,6 +242,10 @@ namespace UrbanTag
             if (orangeShouldBeTrack)
             {
                 colorsToTrack.Add(new ColorObject("orange"));
+            }
+            if (whiteShouldBeTrack)
+            {
+                colorsToTrack.Add(new ColorObject("white"));
             }
         }
 
@@ -270,11 +286,6 @@ namespace UrbanTag
         {
             if (!initDone)
                 return;
-            if (screenOrientation != Screen.orientation)
-            {
-                screenOrientation = Screen.orientation;
-                updateLayout();
-            }
 
 #if UNITY_IOS && !UNITY_EDITOR && (UNITY_4_6_3 || UNITY_4_6_4 || UNITY_5_0_0 || UNITY_5_0_1)
 				        if (webCamTexture.width > 16 && webCamTexture.height > 16) {
@@ -309,8 +320,8 @@ namespace UrbanTag
 
                 if (!isTracking)
                 {
-                    coroutine = trackingCoroutine(thresholdMat, hsvMat, rgbMat);
-                    StartCoroutine(coroutine);
+                    trackingThread = new Thread(trackingFunc);
+                    trackingThread.Start();
                 }
                 Imgproc.cvtColor(rgbMat, hsvMat, Imgproc.COLOR_RGB2HSV);
                 morphOps(thresholdMat);
@@ -330,30 +341,8 @@ namespace UrbanTag
             Application.LoadLevel("OpenCVForUnitySample");
         }
 
-        public void OnChangeCameraButton()
-        {
-            shouldUseFrontFacing = !shouldUseFrontFacing;
-            StartCoroutine(init());
-        }
-
-        /// <summary>
-        /// Draws the object.
-        /// </summary>
-        /// <param name="theColorObjects">The color objects.</param>
-        /// <param name="frame">Frame.</param>
-        /// <param name="temp">Temp.</param>
-        /// <param name="contours">Contours.</param>
-        /// <param name="hierarchy">Hierarchy.</param>
-        void drawObject(List<ColorObject> theColorObjects, Mat frame, Mat temp, List<MatOfPoint> contours, Mat hierarchy)
-        {
-            for (int i = 0; i < theColorObjects.Count; i++)
-            {
-                //Imgproc.drawContours(frame, contours, i, theColorObjects[i].getColor(), 3, 8, hierarchy, int.MaxValue, new Point());
-                Core.circle(frame, new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos()), 50, theColorObjects[i].getColor());
-                //Core.putText(frame, theColorObjects[i].getXPos() + " , " + theColorObjects[i].getYPos(), new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos() + 20), 1, 1, theColorObjects[i].getColor(), 2);
-                //Core.putText(frame, theColorObjects[i].getType(), new Point(theColorObjects[i].getXPos(), theColorObjects[i].getYPos() - 20), 1, 2, theColorObjects[i].getColor(), 2);
-            }
-        }
+        Size erodeSizeParam = new Size(3, 3);
+        Size dilateSizeParam = new Size(20, 20);
 
         /// <summary>
         /// Morphs the ops.
@@ -363,9 +352,9 @@ namespace UrbanTag
         {
             //create structuring element that will be used to "dilate" and "erode" image.
             //the element chosen here is a 3px by 3px rectangle
-            Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3, 3));
+            Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, erodeSizeParam);
             //dilate with larger element so make sure object is nicely visible
-            Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(20, 20));
+            Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, dilateSizeParam);
 
             Imgproc.erode(thresh, thresh, erodeElement);
             //Imgproc.erode(thresh, thresh, erodeElement);
@@ -432,6 +421,8 @@ namespace UrbanTag
             return tmpForMemory;
         }
 
+        private Point tmpDraw = new Point();
+
         /// <summary>
         /// draw the list of objects kept in memory
         /// </summary>
@@ -442,7 +433,9 @@ namespace UrbanTag
         {
             for (int i = 0; i < colorToDraw.Count; i++)
             {
-                Core.circle(cameraFeed, new Point(colorToDraw[i].getXPos(), colorToDraw[i].getYPos()), 50, colorToDraw[i].getColor());
+                tmpDraw.x = colorToDraw[i].getXPos();
+                tmpDraw.y = colorToDraw[i].getYPos();
+                Core.circle(cameraFeed, tmpDraw, 50, colorToDraw[i].getColor());
             }
         }
 
@@ -453,11 +446,11 @@ namespace UrbanTag
         /// <param name="HSV"></param>
         /// <param name="cameraFeed"></param>
         /// <returns></returns>
-        IEnumerator trackingCoroutine(Mat threshold, Mat HSV, Mat cameraFeed)
+        void trackingFunc()
         {
             isTracking = true;
             List<ColorObject> myMemory = new List<ColorObject>();
-            ColorObject test = new ColorObject();
+            ColorObject test;
             int i = 0;
             //first find blue objects
             while (i<colorsToTrack.Count)
@@ -466,12 +459,11 @@ namespace UrbanTag
                 Core.inRange(hsvMat, colorsToTrack[i].getHSVmin(), colorsToTrack[i].getHSVmax(), thresholdMat);
                 morphOps(thresholdMat);
                 test = trackFilteredObject(colorsToTrack[i], thresholdMat, hsvMat, rgbMat);
-                if(test.getType() != "null")
+                if(test != null && test.getType() != "null")
                 {
                     myMemory.Add(test);
                 }
                 i++;
-                yield return null;
             }
             colorToDraw = myMemory;
             isTracking = false;

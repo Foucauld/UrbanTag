@@ -68,7 +68,15 @@ public class ColorObject
                     //BGR value for Yellow:
                     setColor(new Scalar(255, 153, 0));
                 }
-        }
+                if (name == "white")
+                {
+                    //and HSV max values
+                    setHSVmin(new Scalar(0, 0, 200));
+                    setHSVmax(new Scalar(179, 255, 255));
+                    //BGR value for white:
+                    setColor(new Scalar(255, 255,255));
+                }
+		}
 	
 		public int getXPos ()
 		{
