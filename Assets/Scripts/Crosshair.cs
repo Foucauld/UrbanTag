@@ -20,10 +20,14 @@ public class Crosshair : MonoBehaviour
 
     private int score;
     public Text scoreText;
+    public Text ammoText;
+
+    public int ammo;
 
 	void Start () {
 	    score = 0;
 	    scoreText.text = "Score : 0";
+	    UpdateAmmoText();
 	}
 
 	void Update () {
@@ -32,14 +36,12 @@ public class Crosshair : MonoBehaviour
 	        float targetDistance = (target.getXPos() - screenHalfWidth) * (target.getXPos() - screenHalfWidth) + (target.getYPos() - screenHalfHeight) * (target.getYPos() - screenHalfHeight);
 	        if (targetDistance < radius * radius)
 	        {
-	            verticalPart.color = red;
-	            horizontalPart.color = red;
-	            isInsideTarget = true;
+	            SetCrosshairColor(red);
+                isInsideTarget = true;
 	        }
 	        else
 	        {
-	            verticalPart.color = white;
-	            horizontalPart.color = white;
+	            SetCrosshairColor(white);
 	            isInsideTarget = false;
 	        }
 	    }
@@ -47,10 +49,25 @@ public class Crosshair : MonoBehaviour
 
     public void Fire()
     {
-        if (isInsideTarget)
-        {
-            score++;
-            scoreText.text = "Score : " + score;
+        if(ammo > 0){
+            if (isInsideTarget)
+            {
+                score++;
+                scoreText.text = "Score : " + score;
+            }
+            ammo--;
+            UpdateAmmoText();
         }
+    }
+
+    private void UpdateAmmoText()
+    {
+        ammoText.text = "Ammo : " + ammo;
+    }
+
+    private void SetCrosshairColor(Color color)
+    {
+        verticalPart.color = color;
+        horizontalPart.color = color;
     }
 }
