@@ -9,6 +9,7 @@ public class SliderText : MonoBehaviour {
     public string unit;
     public byte decimals = 2;
 
+    public GameObject[] inputGroups;
 
     void OnEnable()
     {
@@ -23,5 +24,10 @@ public class SliderText : MonoBehaviour {
     void ChangeValue(float value)
     {
         text.text = value.ToString("n" + decimals) + " " + unit;
+
+        for (int i = 0; i < inputGroups.Length; i++)
+        {
+                inputGroups[i].SetActive(i < value);
+        }
     }
 }
