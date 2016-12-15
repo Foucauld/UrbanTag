@@ -14,6 +14,7 @@ public class Crosshair : MonoBehaviour
     Color white = Color.white;
     Color red = Color.red;
     private bool isInsideTarget;
+    private string hitColor;
 
     private float screenHalfWidth = 320;
     private float screenHalfHeight = 240;
@@ -30,7 +31,11 @@ public class Crosshair : MonoBehaviour
 	    UpdateAmmoText();
 	}
 
-	void Update () {
+	void Update ()
+	{
+	    isInsideTarget = false;
+	    SetCrosshairColor(white);
+
 	    foreach (ColorObject target in colorTracker.GetTargets())
 	    {
 	        float targetDistance = (target.getXPos() - screenHalfWidth) * (target.getXPos() - screenHalfWidth) + (target.getYPos() - screenHalfHeight) * (target.getYPos() - screenHalfHeight);
@@ -38,11 +43,7 @@ public class Crosshair : MonoBehaviour
 	        {
 	            SetCrosshairColor(red);
                 isInsideTarget = true;
-	        }
-	        else
-	        {
-	            SetCrosshairColor(white);
-	            isInsideTarget = false;
+	            hitColor = target.getType();
 	        }
 	    }
 	}
@@ -54,13 +55,15 @@ public class Crosshair : MonoBehaviour
             {
                 score++;
                 scoreText.text = "Score : " + score;
+                GameState.increaseScore(hitColor);
             }
             ammo--;
             UpdateAmmoText();
         }
+
     }
 
-    private void UpdateAmmoText()
+    public void UpdateAmmoText()
     {
         ammoText.text = "Ammo : " + ammo;
     }

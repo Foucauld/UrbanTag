@@ -368,11 +368,6 @@ namespace UrbanTag
             webCamTexture.Stop();
         }
 
-        public void OnBackButton()
-        {
-            Application.LoadLevel("OpenCVForUnitySample");
-        }
-
         Size erodeSizeParam = new Size(3, 3);
         Size dilateSizeParam = new Size(20, 20);
 
