@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 using System.Collections;
@@ -88,3 +90,5 @@ public class UIUtility : MonoBehaviour
         r.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
     }
 }
+
+#endif

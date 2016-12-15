@@ -29,6 +29,6 @@ public class StartButton : MonoBehaviour {
         //}
         
         //GameState.init(playerList, float.Parse(gameTime.ToString()));
-        SceneManager.LoadScene("test");
+        SceneManager.LoadScene("GameScene");
     }
 }
