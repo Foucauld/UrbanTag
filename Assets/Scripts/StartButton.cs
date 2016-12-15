@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -13,22 +12,22 @@ public class StartButton : MonoBehaviour {
         public UnityEngine.UI.Text color;
     }
     public UnityEngine.UI.Slider slider;
-    public List<playerInfo> playerList;
+    public List<playerInfo> playerList = new List<playerInfo>();
     public UnityEngine.UI.Text gameTime;
     public player[] players;
 
     public void startButton()
     {
-        //playerInfo tmp;
-        //tmp.score = 0;
-        //for(int i = 0; i<slider.value; i++)
-        //{
-        //    tmp.playerColor = players[i].color.ToString();
-        //    tmp.name = players[i].pseudo.ToString();
-        //    playerList.Add(tmp);
-        //}
-        
-        //GameState.init(playerList, float.Parse(gameTime.ToString()));
+        playerInfo tmp;
+        tmp.score = 0;
+        for(int i = 0; i < slider.value; i++)
+        {
+            tmp.playerColor = players[i].color.text.ToLower();
+            tmp.name = players[i].pseudo.text;
+            playerList.Add(tmp);
+        }
+
+        GameState.init(playerList, float.Parse(gameTime.text));
         SceneManager.LoadScene("GameScene");
     }
 }

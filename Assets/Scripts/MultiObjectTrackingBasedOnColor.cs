@@ -100,12 +100,12 @@ namespace UrbanTag
         /// <summary>
         /// Associate color should be track?
         /// </summary>
-        bool whiteShouldBeTrack = false;
-        bool blueShouldBeTrack = false;
-        bool yellowShouldBeTrack = false;
-        bool redShouldBeTrack = false;
-        bool greenShouldBeTrack = true;
-        bool orangeShouldBeTrack = false;
+        bool whiteShouldBeTrack;
+        bool blueShouldBeTrack;
+        bool yellowShouldBeTrack;
+        bool redShouldBeTrack;
+        bool greenShouldBeTrack;
+        bool orangeShouldBeTrack;
 
         /// <summary>
         /// Color objects which need to appear on screen when traking don't need to run
@@ -127,9 +127,41 @@ namespace UrbanTag
         // Use this for initialization
         void Start()
         {
+            FindColorsToTrack();
             Screen.orientation = ScreenOrientation.Portrait;
             StartCoroutine(init());
             Renderer renderer = GetComponent<Renderer>();
+        }
+
+        private void FindColorsToTrack()
+        {
+            for (int i = 0; i < GameState.players.Count; i++)
+            {
+                if (GameState.players[i].playerColor == "red")
+                {
+                    redShouldBeTrack = true;
+                }
+                else if (GameState.players[i].playerColor == "blue")
+                {
+                    blueShouldBeTrack = true;
+                }
+                else if (GameState.players[i].playerColor == "green")
+                {
+                    greenShouldBeTrack = true;
+                }
+                else if (GameState.players[i].playerColor == "yellow")
+                {
+                    yellowShouldBeTrack = true;
+                }
+                else if (GameState.players[i].playerColor == "orange")
+                {
+                    orangeShouldBeTrack = true;
+                }
+                else if (GameState.players[i].playerColor == "white")
+                {
+                    whiteShouldBeTrack = true;
+                }
+            }
         }
 
         private IEnumerator init()
