@@ -4006,6 +4006,10 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
+    - m_Text: 0
+      m_Image: {fileID: 21300000, guid: fccea209f9ea7b1488225287813f4e38, type: 3}
+    - m_Text: 1
+      m_Image: {fileID: 21300000, guid: fccea209f9ea7b1488225287813f4e38, type: 3}
     - m_Text: 5
       m_Image: {fileID: 21300000, guid: e484876f0cfbe8d46981ae0062b5e77f, type: 3}
     - m_Text: 10
@@ -7202,7 +7206,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 5
+  m_Text: 0
 --- !u!222 &1724456402
 CanvasRenderer:
   m_ObjectHideFlags: 0

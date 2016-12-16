@@ -16,10 +16,15 @@ public class GameState : MonoBehaviour {
 
     static public void increaseScore(string playerColor)
     {
-        PlayerInfo playerInfo = players.Find(currentPlayer => currentPlayer.playerColor == playerColor);
-        if (playerInfo.Equals(default(PlayerInfo)))
+        for (int i = 0; i < players.Count; i++)
         {
-            playerInfo.hit++;
+            if (players[i].playerColor.Equals(playerColor))
+            {
+                // TODO : this is dirty, take time to get references to these elements
+                PlayerInfo playerInfo = players[i];
+                playerInfo.hit++;
+                players[i] = playerInfo;
+            }
         }
         totalScore++;
     }

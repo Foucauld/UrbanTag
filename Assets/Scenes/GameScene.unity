@@ -329,6 +329,7 @@ MonoBehaviour:
   timerText: {fileID: 626419633}
   crosshair: {fileID: 774600915}
   toShowOnEndGame: {fileID: 1750141660}
+  SceneToLoadOnTimesUp: EndGameMenu
 --- !u!114 &626419633
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,11 +12,16 @@ public class GameTimer : MonoBehaviour
     public Crosshair crosshair;
 
     public GameObject toShowOnEndGame;
+    public string SceneToLoadOnTimesUp;
 
 	// Use this for initialization
 	void Start ()
 	{
 	    remainingTime = GameState.remainingTime * 60;
+	    if (remainingTime < 60)
+	    {
+	        remainingTime = 10;
+	    }
 	    remainingAmmoTime = remainingTime;
 	}
 	
@@ -24,9 +29,9 @@ public class GameTimer : MonoBehaviour
 	void Update ()
 	{
 	    updateAmmoOnTime();
+	    remainingTime -= Time.deltaTime;
 	    if (remainingTime > 0)
 	    {
-	        remainingTime -= Time.deltaTime;
 	        timerText.text = printTimer(remainingTime);
 	    }
 	    else if (remainingTime < 0 && remainingTime > -3)
@@ -36,9 +41,8 @@ public class GameTimer : MonoBehaviour
 	    else
 	    {
 	        toShowOnEndGame.SetActive(false);
-	        Application.LoadLevel("todo");
+	        Application.LoadLevel(SceneToLoadOnTimesUp);
 	    }
-
 	}
 
     string printTimer(float sec)

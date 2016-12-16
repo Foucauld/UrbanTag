@@ -377,9 +377,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 402854400}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2215de5cac7c64549a08883373071872, type: 3}
+  m_Script: {fileID: 11500000, guid: 060aa188dc4c01b429be14aca3344482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SceneToLaunchOnButtonClick: StartGameMenu
 --- !u!114 &402854403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -419,7 +420,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 402854402}
+      - m_Target: {fileID: 0}
         m_MethodName: startGame
         m_Mode: 1
         m_Arguments:
@@ -994,7 +995,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2024026170}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d45d2dfa3f59c6644abe68f9cf1d3ab6, type: 3}
+  m_Script: {fileID: 11500000, guid: 7696221f0cbbc764498b26fbbf4228af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2024026173
@@ -1037,7 +1038,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2024026172}
-        m_MethodName: quitGame
+        m_MethodName: Quit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
