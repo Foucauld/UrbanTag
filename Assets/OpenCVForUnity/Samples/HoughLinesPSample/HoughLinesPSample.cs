@@ -26,7 +26,9 @@ namespace OpenCVForUnitySample
 						Imgproc.cvtColor (imgMat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
 
-						Imgproc.Canny (grayMat, grayMat, 50, 200);
+						Imgproc.Canny (grayMat, grayMat, 50, 
+                            
+                            0);
 
 						Mat lines = new Mat ();
 

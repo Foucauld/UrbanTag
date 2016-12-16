@@ -315,7 +315,12 @@ namespace OpenCVForUnity
  * <p>Computes a dense optical flow using the Gunnar Farneback's algorithm.</p>
  *
  * <p>The function finds an optical flow for each <code>prev</code> pixel using the
- * [Farneback2003] algorithm so that</p>
+ * [Farneback
+ * 
+ * 
+ * 
+ * 
+ * 03] algorithm so that</p>
  *
  * <p><em>prev(y,x) ~ next(y + flow(y,x)[1], x + flow(y,x)[0])</em></p>
  *

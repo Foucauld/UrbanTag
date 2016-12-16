@@ -18,18 +18,24 @@ public class Crosshair : MonoBehaviour
 
     private float screenHalfWidth = 320;
     private float screenHalfHeight = 240;
-
-    private int score;
+    
     public Text scoreText;
     public Text ammoText;
 
-    public int ammo=40;
+    int ammo=99;
 
 	void Start () {
-	    score = 0;
-	    scoreText.text = "Score : 0";
+
+	    
+        if (GameState.shouldAmmo)
+        {
+            GameState.score = 0;
+            scoreText.text = "Score : 0";
+            GameState.ammo = ammo;
+            GameState.shouldAmmo = false;
+        }
 	    UpdateAmmoText();
-        GameState.ammo = ammo;
+        scoreText.text = "Score: " + GameState.score;
 
     }
 
@@ -55,8 +61,8 @@ public class Crosshair : MonoBehaviour
         if(GameState.ammo > 0){
             if (isInsideTarget)
             {
-                score++;
-                scoreText.text = "Score : " + score;
+                GameState.score++;
+                scoreText.text = "Score : " + GameState.score;
                 GameState.increaseScore(hitColor);
             }
             GameState.ammo--;

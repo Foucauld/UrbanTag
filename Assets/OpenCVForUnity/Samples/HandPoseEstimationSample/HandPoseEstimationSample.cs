@@ -197,7 +197,10 @@ namespace OpenCVForUnitySample
 										spectrumMat = new Mat ();
 										blobColorRgba = new Scalar (255);
 										blobColorHsv = new Scalar (255);
-										SPECTRUM_SIZE = new Size (200, 64);
+										SPECTRUM_SIZE = new Size (
+                                            
+                                            
+                                            0, 64);
 										CONTOUR_COLOR = new Scalar (255, 0, 0, 255);
 										CONTOUR_COLOR_WHITE = new Scalar (255, 255, 255, 255);
 

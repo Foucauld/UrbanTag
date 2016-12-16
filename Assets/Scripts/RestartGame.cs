@@ -8,5 +8,6 @@ public class RestartGame : MonoBehaviour {
     {
         
         SceneManager.LoadScene("MainMenu");
+       
     }
 }

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 
 public class GameState : MonoBehaviour {
-
+    
+    static public bool shouldAmmo = true;
     static public bool shouldReload=true;
     static public bool shouldInitTime = true;
     static public float remainingTimeInMinutes;
@@ -10,6 +11,8 @@ public class GameState : MonoBehaviour {
     static public int totalScore;
     static public List<PlayerInfo> players;
     static public int ammo;
+    static public int score;
+    
 
     static public void init(List<PlayerInfo> players0, float remainingTime0)
     {
@@ -39,6 +42,7 @@ public class GameState : MonoBehaviour {
         totalScore = 0;
         shouldInitTime = true;
         shouldReload = true;
+        shouldAmmo = true;
         for (int i = 0; i < players.Count; i++)
         {
             PlayerInfo currentPlayer;
