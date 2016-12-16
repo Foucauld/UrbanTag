@@ -7,6 +7,7 @@ public class Score : MonoBehaviour {
 
 	void Start () {
         FinalScore.text = "Score Final: "+ GameState.totalScore;
+
 	}
 	
 	

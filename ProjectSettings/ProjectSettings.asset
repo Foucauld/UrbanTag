@@ -4,14 +4,14 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 8
-  productGUID: b0af2c755aa7ae1419c17f91260ddf50
+  productGUID: 65d6a7250169c514d9df548faec56631
   AndroidProfiler: 0
-  defaultScreenOrientation: 0
+  defaultScreenOrientation: 4
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: UrbanTag
+  companyName: Enox Software
+  productName: MarkerBasedARSample
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenStyle: 0
@@ -28,7 +28,7 @@ PlayerSettings:
   m_MobileMTRendering: 0
   m_StackTraceTypes: 010000000100000001000000010000000100000001000000
   iosShowActivityIndicatorOnLoading: -1
-  androidShowActivityIndicatorOnLoading: 0
+  androidShowActivityIndicatorOnLoading: -1
   iosAppInBackgroundBehavior: 0
   displayResolutionDialog: 1
   iosAllowHTTPDownload: 1
@@ -41,7 +41,7 @@ PlayerSettings:
   disableDepthAndStencilBuffers: 0
   defaultIsFullScreen: 1
   defaultIsNativeResolution: 1
-  runInBackground: 0
+  runInBackground: 1
   captureSingleScreen: 0
   Override IPod Music: 0
   Prepare IOS For Recording: 0
@@ -94,18 +94,18 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleIdentifier: org.fmnt.urbantag
-  bundleVersion: 1.0
+  bundleIdentifier: com.enoxsoftware.markerbasedarsample
+  bundleVersion: 1.1.8
   preloadedAssets: []
   metroEnableIndependentInputSource: 0
   xboxOneDisableKinectGpuReservation: 0
   singlePassStereoRendering: 0
   protectGraphicsMemory: 0
-  AndroidBundleVersionCode: 1
-  AndroidMinSdkVersion: 19
+  AndroidBundleVersionCode: 17
+  AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1
   aotOptions: 
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 1
   stripEngineCode: 1
   iPhoneStrippingLevel: 0
   iPhoneScriptCallOptimization: 0
@@ -120,9 +120,10 @@ PlayerSettings:
     serializedVersion: 2
     m_Bits: 238
   iPhoneSdkVersion: 988
-  iPhoneTargetOSVersion: 24
+  iPhoneTargetOSVersion: 22
   tvOSSdkVersion: 0
   tvOSTargetOSVersion: 900
+  tvOSRequireExtendedGameController: 0
   uIPrerenderedIcon: 0
   uIRequiresPersistentWiFi: 0
   uIRequiresFullScreen: 1
@@ -149,7 +150,7 @@ PlayerSettings:
   iOSLaunchScreenBackgroundColor:
     serializedVersion: 2
     rgba: 0
-  iOSLaunchScreenFillPct: 100
+  iOSLaunchScreenFillPct: 1
   iOSLaunchScreenSize: 100
   iOSLaunchScreenCustomXibPath: 
   iOSLaunchScreeniPadType: 0
@@ -162,6 +163,7 @@ PlayerSettings:
   iOSLaunchScreeniPadCustomXibPath: 
   iOSDeviceRequirements: []
   iOSURLSchemes: []
+  appleDeveloperTeamID: 
   AndroidTargetDevice: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
@@ -169,7 +171,7 @@ PlayerSettings:
   AndroidKeyaliasName: 
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
-  androidEnableBanner: 1
+  androidEnableBanner: 0
   m_AndroidBanners:
   - width: 320
     height: 180
@@ -183,7 +185,36 @@ PlayerSettings:
       m_Icon: {fileID: 0}
       m_Width: 128
       m_Height: 128
-  m_BuildTargetBatching: []
+  - m_BuildTarget: Android
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: a5833223cf77a814eb073dd4da187d32, type: 3}
+      m_Width: 192
+      m_Height: 192
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 60f41faa9d0a26841819aff82b15d758, type: 3}
+      m_Width: 144
+      m_Height: 144
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 01ce79a3544a5994eaa6b1c21f3325ae, type: 3}
+      m_Width: 96
+      m_Height: 96
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: bb9fef41f62db11499765dc90fe60b13, type: 3}
+      m_Width: 72
+      m_Height: 72
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 53b845fdde069df4ea37fecae6ab97fb, type: 3}
+      m_Width: 48
+      m_Height: 48
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: 41fa7ee5c7b30f5488582244422cadbb, type: 3}
+      m_Width: 36
+      m_Height: 36
+  m_BuildTargetBatching:
+  - m_BuildTarget: Android
+    m_StaticBatching: 1
+    m_DynamicBatching: 1
   m_BuildTargetGraphicsAPIs: []
   webPlayerTemplate: APPLICATION:Default
   m_TemplateCustomTags: {}
@@ -203,12 +234,15 @@ PlayerSettings:
   wiiUSystemHeapSize: 128
   wiiUTVStartupScreen: {fileID: 0}
   wiiUGamePadStartupScreen: {fileID: 0}
+  wiiUDrcBufferDisabled: 0
   wiiUProfilerLibPath: 
   actionOnDotNetUnhandledException: 1
   enableInternalProfiler: 0
   logObjCUncaughtExceptions: 1
   enableCrashReportAPI: 0
+  cameraUsageDescription: 
   locationUsageDescription: 
+  microphoneUsageDescription: 
   XboxTitleId: 
   XboxImageXexPath: 
   XboxSpaPath: 
@@ -248,7 +282,8 @@ PlayerSettings:
   ps4AppType: 0
   ps4ParamSfxPath: 
   ps4VideoOutPixelFormat: 0
-  ps4VideoOutResolution: 4
+  ps4VideoOutInitialWidth: 1920
+  ps4VideoOutReprojectionRate: 120
   ps4PronunciationXMLPath: 
   ps4PronunciationSIGPath: 
   ps4BackgroundImagePath: 
@@ -277,9 +312,12 @@ PlayerSettings:
   ps4pnFriends: 1
   ps4pnGameCustomData: 1
   playerPrefsSupport: 0
+  ps4UseResolutionFallback: 0
+  restrictedAudioUsageRights: 0
   ps4ReprojectionSupport: 0
   ps4UseAudio3dBackend: 0
   ps4SocialScreenEnabled: 0
+  ps4ScriptOptimizationLevel: 3
   ps4Audio3dVirtualSpeakerCount: 14
   ps4attribCpuUsage: 0
   ps4PatchPkgPath: 
@@ -311,7 +349,7 @@ PlayerSettings:
   psp2LiveAreaTrialPath: 
   psp2PatchChangeInfoPath: 
   psp2PatchOriginalPackage: 
-  psp2PackagePassword: F69AzBlax3CF3EDNhm3soLBPh71Yexui
+  psp2PackagePassword: frAQBc8Wsa1xVPfvJcrgRYwTiizs2trQ
   psp2KeystoneFile: 
   psp2MemoryExpansionMode: 0
   psp2DRMType: 0
@@ -343,15 +381,17 @@ PlayerSettings:
   psp2UseDebugIl2cppLibs: 0
   psmSplashimage: {fileID: 0}
   spritePackerPolicy: 
-  scriptingDefineSymbols: {}
-  metroPackageName: UrbanTag
+  scriptingDefineSymbols:
+    1: 
+    7: 
+  metroPackageName: MarkerBasedARSample
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: UrbanTag
+  metroApplicationDescription: MarkerBasedARSample
   wsaImages: {}
   metroTileShortName: 
   metroCommandLineArgsFile: 
@@ -361,9 +401,8 @@ PlayerSettings:
   metroWideTileShowName: 0
   metroDefaultTileSize: 1
   metroTileForegroundText: 1
-  metroTileBackgroundColor: {r: 0.13333334, g: 0.17254902, b: 0.21568628, a: 0}
-  metroSplashScreenBackgroundColor: {r: 0.12941177, g: 0.17254902, b: 0.21568628,
-    a: 1}
+  metroTileBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
+  metroSplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenUseBackgroundColor: 0
   platformCapabilities: {}
   metroFTAName: 
@@ -413,21 +452,23 @@ PlayerSettings:
   XboxOnePersistentLocalStorageSize: 0
   intPropertyNames:
   - Android::ScriptingBackend
+  - Metro::ScriptingBackend
   - Standalone::ScriptingBackend
+  - WP8::ScriptingBackend
   - WebGL::ScriptingBackend
   - WebGL::audioCompressionFormat
   - WebGL::exceptionSupport
   - WebGL::memorySize
-  - WebPlayer::ScriptingBackend
   - iOS::Architecture
   - iOS::ScriptingBackend
   Android::ScriptingBackend: 0
+  Metro::ScriptingBackend: 2
   Standalone::ScriptingBackend: 0
+  WP8::ScriptingBackend: 2
   WebGL::ScriptingBackend: 1
   WebGL::audioCompressionFormat: 4
-  WebGL::exceptionSupport: 1
+  WebGL::exceptionSupport: 0
   WebGL::memorySize: 256
-  WebPlayer::ScriptingBackend: 0
   iOS::Architecture: 2
   iOS::ScriptingBackend: 1
   boolPropertyNames:
@@ -442,14 +483,11 @@ PlayerSettings:
   - Standalone::VR::enable
   - Tizen::VR::enable
   - WebGL::VR::enable
-  - WebGL::analyzeBuildSize
   - WebGL::dataCaching
-  - WebGL::useEmbeddedResources
   - WebPlayer::VR::enable
   - WiiU::VR::enable
   - Xbox360::VR::enable
   - XboxOne::VR::enable
-  - XboxOne::enus
   - iOS::VR::enable
   - tvOS::VR::enable
   Android::VR::enable: 0
@@ -463,14 +501,11 @@ PlayerSettings:
   Standalone::VR::enable: 0
   Tizen::VR::enable: 0
   WebGL::VR::enable: 0
-  WebGL::analyzeBuildSize: 0
   WebGL::dataCaching: 0
-  WebGL::useEmbeddedResources: 0
   WebPlayer::VR::enable: 0
   WiiU::VR::enable: 0
   Xbox360::VR::enable: 0
   XboxOne::VR::enable: 0
-  XboxOne::enus: 1
   iOS::VR::enable: 0
   tvOS::VR::enable: 0
   stringPropertyNames:
@@ -485,7 +520,6 @@ PlayerSettings:
   - Unity_Ads_ServiceEnabled::Unity_Ads_ServiceEnabled
   - WebGL::emscriptenArgs
   - WebGL::template
-  - additionalIl2CppArgs::additionalIl2CppArgs
   Analytics_ServiceEnabled::Analytics_ServiceEnabled: False
   Build_ServiceEnabled::Build_ServiceEnabled: False
   Collab_ServiceEnabled::Collab_ServiceEnabled: False
@@ -497,7 +531,6 @@ PlayerSettings:
   Unity_Ads_ServiceEnabled::Unity_Ads_ServiceEnabled: False
   WebGL::emscriptenArgs: 
   WebGL::template: APPLICATION:Default
-  additionalIl2CppArgs::additionalIl2CppArgs: 
   vectorPropertyNames:
   - Android::VR::enabledDevices
   - Metro::VR::enabledDevices

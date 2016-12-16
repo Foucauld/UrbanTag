@@ -23,13 +23,15 @@ public class Crosshair : MonoBehaviour
     public Text scoreText;
     public Text ammoText;
 
-    public int ammo;
+    public int ammo=40;
 
 	void Start () {
 	    score = 0;
 	    scoreText.text = "Score : 0";
 	    UpdateAmmoText();
-	}
+        GameState.ammo = ammo;
+
+    }
 
 	void Update ()
 	{
@@ -50,14 +52,14 @@ public class Crosshair : MonoBehaviour
 
     public void Fire()
     {
-        if(ammo > 0){
+        if(GameState.ammo > 0){
             if (isInsideTarget)
             {
                 score++;
                 scoreText.text = "Score : " + score;
                 GameState.increaseScore(hitColor);
             }
-            ammo--;
+            GameState.ammo--;
             UpdateAmmoText();
         }
 
@@ -65,7 +67,7 @@ public class Crosshair : MonoBehaviour
 
     public void UpdateAmmoText()
     {
-        ammoText.text = "Ammo : " + ammo;
+        ammoText.text = "Ammo : " + GameState.ammo;
     }
 
     private void SetCrosshairColor(Color color)

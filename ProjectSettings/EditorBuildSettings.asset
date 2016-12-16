@@ -6,9 +6,21 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/MarkerBasedARSample/Scenes/MarkerBasedARSample.unity
+  - enabled: 1
+    path: Assets/MarkerBasedARSample/Scenes/ShowLicense.unity
+  - enabled: 1
+    path: Assets/MarkerBasedARSample/Scenes/ShowARMarker.unity
+  - enabled: 1
+    path: Assets/MarkerBasedARSample/Scenes/Texture2DMarkerBasedARSample.unity
+  - enabled: 1
+    path: Assets/Scenes/WebCamTextureMarkerBasedARSample.unity
+  - enabled: 1
+    path: Assets/MarkerBasedARSample/Scenes/GyroSensorMarkerBasedARSample.unity
   - enabled: 1
     path: Assets/Scenes/StartGameMenu.unity
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
   - enabled: 1

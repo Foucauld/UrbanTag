@@ -4,12 +4,9 @@ using System;
 
 public class GameTimer : MonoBehaviour
 {
-
-    private float remainingTime;
-    private float remainingAmmoTime;
+    
     public Text timerText;
-    private int ammoTimer = Mathf.RoundToInt(GameState.remainingTime * 20);
-    public Crosshair crosshair;
+   
 
     public GameObject toShowOnEndGame;
     public string SceneToLoadOnTimesUp;
@@ -17,24 +14,28 @@ public class GameTimer : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-	    remainingTime = GameState.remainingTime * 60;
-	    if (remainingTime < 60)
-	    {
-	        remainingTime = 10;
-	    }
-	    remainingAmmoTime = remainingTime;
+        if (GameState.shouldInitTime)
+        {
+            GameState.remainingTime = GameState.remainingTimeInMinutes * 60;
+            if (GameState.remainingTime < 60)
+            {
+                GameState.remainingTime = 10;
+            }
+
+            GameState.shouldInitTime = false;
+        }
+
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-	    updateAmmoOnTime();
-	    remainingTime -= Time.deltaTime;
-	    if (remainingTime > 0)
+        GameState.remainingTime -= Time.deltaTime;
+	    if (GameState.remainingTime > 0)
 	    {
-	        timerText.text = printTimer(remainingTime);
+	        timerText.text = printTimer(GameState.remainingTime);
 	    }
-	    else if (remainingTime < 0 && remainingTime > -3)
+	    else if (GameState.remainingTime < 0 && GameState.remainingTime > -3)
 	    {
 	        toShowOnEndGame.SetActive(true);
 	    }
@@ -56,18 +57,5 @@ public class GameTimer : MonoBehaviour
             return "Timer : " + m + ":" + r;
     }
 
-    void updateAmmoOnTime()
-    {
-        if (remainingTime < remainingAmmoTime - 30)
-        {
-            ammoTimer -= 1;
-            if (crosshair.ammo <= 79)
-            {
-                crosshair.ammo += 20;
-                crosshair.UpdateAmmoText();
-            }
-            remainingAmmoTime = Mathf.CeilToInt(remainingTime);
-        }
-    }
 
 }
